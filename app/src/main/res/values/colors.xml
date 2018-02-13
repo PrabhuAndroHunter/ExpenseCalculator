@@ -7,4 +7,6 @@
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorLightPink">#f4b5ca</color>
     <color name="colorLightGreen">#7a8483</color>
+    <color name="colorSpinner">#e9dddd</color>
+    <color name="colorTransparent">#80FFFFFF</color>
 </resources>

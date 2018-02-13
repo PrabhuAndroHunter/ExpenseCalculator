@@ -6,4 +6,13 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="Rs">\u20B9 </string>
+    <string name="Rs_50">+ \u20B9 50</string>
+    <string name="Rs_200">+ \u20B9 200</string>
+    <string name="Rs_500">+ \u20B9 500</string>
+    <string name="Rs_2000">+ \u20B9 2000</string>
 </resources>

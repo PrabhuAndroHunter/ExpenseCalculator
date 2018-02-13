@@ -1,0 +1,60 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.pub.expensecalculator.fragment.HomeFragment">
+
+    <TextView
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:fontFamily="casual"
+        android:gravity="center_horizontal"
+        android:maxLines="1"
+        android:paddingTop="8dp"
+        android:text="Available Balance"
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/text_view_balanse"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@id/header"
+        android:background="@color/colorPrimary"
+        android:elevation="4dp"
+        android:ellipsize="end"
+        android:fontFamily="serif"
+        android:gravity="center_horizontal"
+        android:maxLines="1"
+        android:text="\u20B9 2000.00"
+        android:textColor="@android:color/white"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/transaction_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_view_balanse"
+        android:layout_centerHorizontal="true"
+        android:background="@color/colorAccent"
+        android:fontFamily="sans-serif-condensed"
+        android:gravity="center_horizontal"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="Last 10 Transactions"
+        android:textSize="15sp"
+        android:textStyle="bold" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_View_transaction"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/transaction_header"
+        android:clipToPadding="false"
+        android:elevation="2dp"
+        tools:listitem="@layout/item_last_ten_transaction" />
+
+</RelativeLayout>

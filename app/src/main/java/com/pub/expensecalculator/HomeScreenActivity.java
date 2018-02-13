@@ -1,8 +1,10 @@
 package com.pub.expensecalculator;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,40 +15,75 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
+import com.pub.expensecalculator.database.DBHelper;
+import com.pub.expensecalculator.fragment.AddIncomeFragment;
+import com.pub.expensecalculator.fragment.ExpenseFragment;
+import com.pub.expensecalculator.fragment.HomeFragment;
+import com.pub.expensecalculator.utils.CommonUtilities;
+
 public class HomeScreenActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private final String TAG = HomeScreenActivity.class.toString();
+
+    private FloatingActionMenu mFabTransactionMenu;
+    private FloatingActionButton mFabIncomeBtn;
+    private FloatingActionButton mFabExpenseBtn;
+    private Toolbar mToolBar;
+    private final int mContentlayout = R.id.content_layout;
+    private FragmentManager fragmentManager = getSupportFragmentManager();
+    private Fragment mFragment;
+    private boolean isSplFragmentsLoaded = false;
+
+    private DBHelper dbHelper;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        mToolBar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolBar);
+        dbHelper = CommonUtilities.getDBObject(this);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        mFabTransactionMenu = (FloatingActionMenu) findViewById(R.id.fabmenu_transaction);
+        mFabTransactionMenu.setClosedOnTouchOutside(true);
+        mFabIncomeBtn = (FloatingActionButton) findViewById(R.id.fab_button_income);
+        mFabExpenseBtn = (FloatingActionButton) findViewById(R.id.fab_button_expense);
+        mFabIncomeBtn.setOnClickListener(clickListener);
+        mFabExpenseBtn.setOnClickListener(clickListener);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        NavigationView mNavigationView = drawer.findViewById(R.id.nav_view);
+        mNavigationView.setItemIconTintList(null);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, mToolBar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        dbHelper = CommonUtilities.getDBObject(this);
+        loadHomeScreen();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     @Override
     public void onBackPressed() {
+        Log.d(TAG, "onBackPressed: ");
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        }
+
+        if (isSplFragmentsLoaded) {
+            loadHomeScreen();
         } else {
             super.onBackPressed();
         }
@@ -79,23 +116,66 @@ public class HomeScreenActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        switch (id) {
+            case R.id.nav_Home:
+                loadHomeScreen();
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private View.OnClickListener clickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.fab_button_income:
+                    mToolBar.setTitle("Add Income");
+                    mFragment = new AddIncomeFragment();
+                    inflateFragmentLayout(mFragment);
+                    isSplFragmentsLoaded = true;
+                    mFabTransactionMenu.close(true);
+                    break;
+                case R.id.fab_button_expense:
+                    mToolBar.setTitle("Add Expense");
+                    mFragment = new ExpenseFragment();
+                    inflateFragmentLayout(mFragment);
+                    isSplFragmentsLoaded = true;
+                    mFabTransactionMenu.close(true);
+                    break;
+            }
+        }
+    };
+
+    private void inflateFragmentLayout(Fragment fragment) {
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        if (mFragment instanceof HomeFragment)
+            transaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+        else
+            transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
+        transaction.replace(mContentlayout, fragment).commit();
+    }
+
+    public void loadHomeScreen() {
+        mFragment = new HomeFragment();
+        mToolBar.setTitle("Expense Calculator");
+        inflateFragmentLayout(mFragment);
+    }
+
+    public void hideFabButton(boolean hide) {
+        if (hide)
+            mFabTransactionMenu.hideMenuButton(true);
+        else
+            mFabTransactionMenu.showMenuButton(true);
+
+    }
+
+    public int isFabVisible() {
+        if (mFabTransactionMenu.isMenuButtonHidden())
+            return 1;
+        else
+            return 0;
     }
 }

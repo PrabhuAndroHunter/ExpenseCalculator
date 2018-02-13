@@ -23,7 +23,7 @@
         </activity>
         <activity
             android:name=".HomeScreenActivity"
-            android:label="@string/title_activity_home_screen"
+            android:label="Expense Calculator"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

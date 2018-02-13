@@ -23,4 +23,17 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="FloatingActionButton">
+        <item name="fab_size">mini</item>
+        <item name="fab_colorNormal">@color/colorPrimary</item>
+        <item name="fab_colorPressed">#0eb6a6</item>
+        <item name="fab_colorRipple">#56d2c7</item>
+    </style>
+
+    <style name="FloatingActionMenu">
+        <item name="menu_colorNormal">@color/colorPrimary</item>
+        <item name="menu_colorPressed">#0eb6a6</item>
+        <item name="menu_colorRipple">#56d2c7</item>
+    </style>
+
 </resources>
