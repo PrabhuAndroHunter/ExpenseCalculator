@@ -11,6 +11,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="Rs">\u20B9 </string>
+    <string name="Rs_words">\u20A8 </string>
     <string name="Rs_50">+ \u20B9 50</string>
     <string name="Rs_200">+ \u20B9 200</string>
     <string name="Rs_500">+ \u20B9 500</string>

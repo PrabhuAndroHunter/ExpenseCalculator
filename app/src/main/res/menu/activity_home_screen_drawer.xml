@@ -14,9 +14,9 @@
     <group android:checkableBehavior="single"
         android:id="@+id/g2">
         <item
-            android:id="@+id/nav_de"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
+            android:id="@+id/nav_future_Transaction"
+            android:icon="@drawable/ic_future"
+            android:title="Future Transaction" />
     </group>
 
 </menu>

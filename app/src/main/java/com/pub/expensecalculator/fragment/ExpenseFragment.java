@@ -48,6 +48,7 @@ public class ExpenseFragment extends Fragment implements View.OnClickListener {
     private TextView mDateTv;
 
     private DBHelper dbHelper;
+    private HomeScreenActivity parentActivity;
 
     String[] CATEGORYLIST = {"Please Select Category", "Shopping", "Traveling", "Food", "Bike Service", "Rent"};
     String[] SOURCELIST = {"Please Select Source", "Cash", "Check", "PayTm Wallet", "OnlineBanking"};
@@ -73,6 +74,8 @@ public class ExpenseFragment extends Fragment implements View.OnClickListener {
         super.onActivityCreated(savedInstanceState);
         dbHelper = CommonUtilities.getDBObject(getActivity());
         showBalance();
+        parentActivity = (HomeScreenActivity)getActivity();
+        parentActivity.hideFabButton(true);
     }
 
     private void initViews(View view) {

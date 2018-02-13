@@ -14,12 +14,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.pub.expensecalculator.database.DBHelper;
 import com.pub.expensecalculator.fragment.AddIncomeFragment;
 import com.pub.expensecalculator.fragment.ExpenseFragment;
+import com.pub.expensecalculator.fragment.FutureTransactionFragment;
 import com.pub.expensecalculator.fragment.HomeFragment;
 import com.pub.expensecalculator.utils.CommonUtilities;
 
@@ -35,6 +37,7 @@ public class HomeScreenActivity extends AppCompatActivity
     private FragmentManager fragmentManager = getSupportFragmentManager();
     private Fragment mFragment;
     private boolean isSplFragmentsLoaded = false;
+    private long exitTime;
 
     private DBHelper dbHelper;
 
@@ -84,8 +87,17 @@ public class HomeScreenActivity extends AppCompatActivity
 
         if (isSplFragmentsLoaded) {
             loadHomeScreen();
-        } else {
-            super.onBackPressed();
+        }else if (mFragment instanceof HomeFragment) {
+
+            if ((System.currentTimeMillis() - exitTime) > 2000) {
+                Toast.makeText(getApplicationContext(), "Press back again to exit",
+                        Toast.LENGTH_SHORT).show();
+                exitTime = System.currentTimeMillis();
+            } else {
+                finish();
+            }
+        } else{
+            loadHomeScreen();
         }
     }
 
@@ -119,6 +131,12 @@ public class HomeScreenActivity extends AppCompatActivity
         switch (id) {
             case R.id.nav_Home:
                 loadHomeScreen();
+                break;
+
+            case R.id.nav_future_Transaction:
+                mFragment = new FutureTransactionFragment();
+                mToolBar.setTitle("Future Transactions");
+                inflateFragmentLayout(mFragment);
                 break;
         }
 
@@ -159,9 +177,12 @@ public class HomeScreenActivity extends AppCompatActivity
     }
 
     public void loadHomeScreen() {
-        mFragment = new HomeFragment();
-        mToolBar.setTitle("Expense Calculator");
-        inflateFragmentLayout(mFragment);
+        if (!(mFragment instanceof HomeFragment)) {
+            mFragment = new HomeFragment();
+            mToolBar.setTitle("Expense Calculator");
+            inflateFragmentLayout(mFragment);
+            hideFabButton(false);
+        }
     }
 
     public void hideFabButton(boolean hide) {

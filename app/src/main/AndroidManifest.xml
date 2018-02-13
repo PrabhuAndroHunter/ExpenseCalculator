@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
@@ -25,6 +26,9 @@
             android:name=".HomeScreenActivity"
             android:label="Expense Calculator"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+
+        <receiver android:name=".utils.FutureTransactionReceiver" >
+        </receiver>
     </application>
 
 </manifest>

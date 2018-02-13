@@ -10,7 +10,7 @@ public class Transaction {
     String date, description, category, source, type;
     double amount, balance;
 
-    public static final String TYPE_DEBIT = "debit", TYPE_CREDIT = "credit";
+    public static final String TYPE_DEBIT = "debit", TYPE_CREDIT = "credit", TYPE_FUTURE = "FUTURE";
 
     public Transaction(String date, String description, String category, String source, String type, double amount) {
         this.date = date;

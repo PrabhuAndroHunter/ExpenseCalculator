@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
+import com.pub.expensecalculator.model.FutureTransation;
 import com.pub.expensecalculator.model.Transaction;
 import com.pub.expensecalculator.utils.Constants;
 import com.pub.expensecalculator.utils.SharedPrefManager;
@@ -96,8 +97,8 @@ public class DBHelper {
     public double getBalance() {
         double balance = 0.0;
         Log.d(TAG, "getBalance: ");
-        total_transactions = getTotal_transactions(Constants.TRANSACTION_TABLE, null);
-        Log.d(TAG, "getBalance: total_transactions : "+total_transactions);
+        total_transactions = getTotalTransactions(Constants.TRANSACTION_TABLE, null);
+        Log.d(TAG, "getBalance: total_transactions : " + total_transactions);
         if (total_transactions != 0) {
             Cursor cursor = db.rawQuery("SELECT " + Constants.BALANCE + " FROM " + Constants.TRANSACTION_TABLE + " WHERE " + Constants.ID + " = (SELECT MAX ( " + Constants.ID + " )" + " FROM " + Constants.TRANSACTION_TABLE + ");", null);
             cursor.moveToFirst();
@@ -109,10 +110,10 @@ public class DBHelper {
 
     public long addTransaction(ContentValues values) {
         String tType = values.getAsString(Constants.TRANSACTION_TYPE);
-        if (tType.equalsIgnoreCase(Transaction.TYPE_CREDIT)){
+        if (tType.equalsIgnoreCase(Transaction.TYPE_CREDIT)) {
             Log.d(TAG, "addTransaction: Credit");
             total_amount = getBalance() + values.getAsDouble(Constants.TRANSACTION_AMOUNT);
-        }else {
+        } else {
             Log.d(TAG, "addTransaction: Debit");
             total_amount = getBalance() - values.getAsDouble(Constants.TRANSACTION_AMOUNT);
         }
@@ -152,7 +153,7 @@ public class DBHelper {
     *
     * */
 
-    public int getTotal_transactions(String table, String where) {
+    public int getTotalTransactions(String table, String where) {
         Cursor cursor = db.query(false, table, null, where, null, null, null, null, null);
         try {
             if (cursor != null) {
@@ -204,8 +205,8 @@ public class DBHelper {
         return transactionList; // Return statement
     }
 
-    public List<Transaction> getLastTenTransactions(){
-        List<Transaction> transactionList = new ArrayList <Transaction>();
+    public List <Transaction> getLastTenTransactions() {
+        List <Transaction> transactionList = new ArrayList <Transaction>();
         //Cursor exposes results from a query on a SQLiteDatabase.
         Cursor cursor = db.query(false, Constants.TRANSACTION_TABLE,
                 new String[]{Constants.ID,
@@ -215,7 +216,7 @@ public class DBHelper {
                         Constants.TRANSACTION_SOURCE,
                         Constants.TRANSACTION_TYPE,
                         Constants.TRANSACTION_AMOUNT,
-                        Constants.BALANCE}, null, null, null, null, Constants.ID+ " DESC", "10");
+                        Constants.BALANCE}, null, null, null, null, Constants.ID + " DESC", "10");
 
         if (cursor.moveToFirst()) {
             do {
@@ -238,9 +239,9 @@ public class DBHelper {
 
     /*
     *
-    * This method will update records from TABLE : task_table
+    * This method will update records from TABLE : TRANSACTION_TABLE
     *
-    * @param id is the task id will use to update records
+    * @param id is the transaction id will use to update records
     * @param values a map from column names to new column values. null is a
      *            valid value that will be translated to NULL.
     * */
@@ -260,6 +261,31 @@ public class DBHelper {
         return a;
     }
 
+     /*
+    *
+    * This method will update records from TABLE : TRANSACTION_TABLE
+    *
+    * @param id is the transaction id will use to update records
+    * @param values a map from column names to new column values. null is a
+     *            valid value that will be translated to NULL.
+    * */
+
+    public int updateFutureTransaction(int id, ContentValues values) {
+        Log.d(TAG, "updateRecords: ");
+        int a = 0;
+        try {
+            db.beginTransaction();
+            a = db.update(Constants.FUTURE_TRANSACTION_TABLE, values, Constants.ID + "=" + id, null);
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.endTransaction();
+        }
+        return a;
+    }
+
+
     /*
     *
     *This method will delete task
@@ -270,4 +296,60 @@ public class DBHelper {
         return db.delete(Constants.TRANSACTION_TABLE, condition, null) > 0;
     }
 
+    public boolean deleteFuturedTransaction(int id) {
+        return db.delete(Constants.FUTURE_TRANSACTION_TABLE, Constants.ID + "=" + id, null) > 0;
+    }
+
+    public List <FutureTransation> getFutureTransactionList() throws SQLException { // Creating method
+        List <FutureTransation> transactionList = new ArrayList <FutureTransation>();
+
+        //Cursor exposes results from a query on a SQLiteDatabase.
+        Cursor cursor = db.query(true, Constants.FUTURE_TRANSACTION_TABLE, new String[]{Constants.ID, Constants.TRANSACTION_DATE, Constants.TRANSACTION_DESCRIPTION,
+                Constants.TRANSACTION_AMOUNT, Constants.TRANSACTION_TYPE, Constants.SET_REMINDER}, null, null, null, null, Constants.TRANSACTION_DATE + " DESC", null);
+        if (cursor.moveToFirst()) {
+            do {
+                int tId = cursor.getInt(cursor.getColumnIndex(Constants.ID));
+                String tDate = cursor.getString(cursor.getColumnIndex(Constants.TRANSACTION_DATE));
+                String tDescription = cursor.getString(cursor.getColumnIndex(Constants.TRANSACTION_DESCRIPTION));
+                String tType = cursor.getString(cursor.getColumnIndex(Constants.TRANSACTION_TYPE));
+                double tAmount = cursor.getDouble(cursor.getColumnIndex(Constants.TRANSACTION_AMOUNT));
+                int setReminder = cursor.getInt(cursor.getColumnIndex(Constants.SET_REMINDER));
+                boolean reminder;
+                if (setReminder == 1)
+                    reminder = true;
+                else
+                    reminder = false;
+                transactionList.add(new FutureTransation(tId, tDate, tDescription, tType, tAmount, reminder));
+            } while (cursor.moveToNext());
+            cursor.close();
+            return transactionList;
+        }
+        cursor.close();
+        return transactionList; // Return statement
+    }
+
+     /*
+    *
+    * This method will get distinctdates based on order by 'DESC'
+    *
+    * */
+
+    public List <String> getDistinctDates() {
+        List <String> dates = new ArrayList <String>();
+        Cursor cursor = db.query(true, Constants.FUTURE_TRANSACTION_TABLE, new String[]{Constants.TRANSACTION_DATE}, null, null, Constants.TRANSACTION_DATE, null, Constants.TRANSACTION_DATE + " DESC", null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    String taskDate = cursor.getString(cursor.getColumnIndex(Constants.TRANSACTION_DATE));
+                    dates.add(taskDate);
+                    Log.d(TAG, "getDistinctDates: " + taskDate);
+                } while (cursor.moveToNext());
+                cursor.close();
+                return dates;
+            }
+            // Return statement
+        }
+        cursor.close();
+        return dates;
+    }
 }

@@ -7,9 +7,9 @@ package com.pub.expensecalculator.utils;
 public class Constants {
     public static final String DATABASE_NAME = "transaction.db";
 
-    public static final int DATABASE_VERSION = 1;
-
+    public static final int DATABASE_VERSION = 2;
     public static final String TRANSACTION_TABLE = "transaction_table";
+    public static final String FUTURE_TRANSACTION_TABLE = "future_transaction_table";
 
     public static final String ID = "id";
     public static final String TRANSACTION_DATE = "transaction_date";
@@ -19,6 +19,7 @@ public class Constants {
     public static final String TRANSACTION_TYPE = "transaction_type";       // credit or debit
     public static final String TRANSACTION_AMOUNT = "transaction_amount";
     public static final String BALANCE = "balance";
+    public static final String SET_REMINDER = "set_reminder";
 
     // tables
     public static final String TABLE1 = "CREATE TABLE " + TRANSACTION_TABLE + "("
@@ -29,7 +30,16 @@ public class Constants {
             + TRANSACTION_SOURCE + " text,"
             + TRANSACTION_TYPE + " text,"
             + TRANSACTION_AMOUNT + " REAL,"
-            + BALANCE +" REAL"
+            + BALANCE + " REAL"
+            + " ); ";
+
+    public static final String TABLE2 = "CREATE TABLE " + FUTURE_TRANSACTION_TABLE + "("
+            + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + TRANSACTION_DATE + " text,"
+            + TRANSACTION_DESCRIPTION + " text,"
+            + TRANSACTION_TYPE + " text,"
+            + TRANSACTION_AMOUNT + " REAL,"
+            + SET_REMINDER + " INTEGER"
             + " ); ";
 }
 
