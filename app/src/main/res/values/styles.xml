@@ -48,5 +48,47 @@
         <item name="trackTint">@color/track_color</item>
     </style>
 
+    <style name="account_details_header">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:background">@drawable/button_border</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="account_details_item">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:background">@drawable/shaded_border</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="AppTheme.Widget" />
+
+    <!-- Widget - Divider -->
+    <style name="AppTheme.Widget.Divider">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:background">@color/ColorLine</item>
+    </style>
+
+    <style name="AppTheme.Widget.Divider.Line">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="AppTheme.Widget.Divider.Line.Vertical">
+        <item name="android:layout_height">@dimen/divider.line</item>
+    </style>
+
+    <style name="AppTheme.Widget.Divider.Line.Horizontal">
+        <item name="android:layout_width">@dimen/divider.line</item>
+    </style>
+
 
 </resources>

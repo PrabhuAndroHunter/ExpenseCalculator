@@ -12,17 +12,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.jaredrummler.materialspinner.MaterialSpinner;
-import com.pub.expensecalculator.HomeScreenActivity;
+import com.pub.expensecalculator.activity.HomeScreenActivity;
 import com.pub.expensecalculator.R;
+import com.pub.expensecalculator.adapter.CategorySourceSpinnerAdapter;
 import com.pub.expensecalculator.database.DBHelper;
+import com.pub.expensecalculator.model.Category;
+import com.pub.expensecalculator.model.Source;
 import com.pub.expensecalculator.model.Transaction;
 import com.pub.expensecalculator.utils.CommonUtilities;
 import com.pub.expensecalculator.utils.Constants;
@@ -41,21 +44,20 @@ public class AddIncomeFragment extends Fragment implements View.OnClickListener 
     private String category, source, description, date;
     private TextInputLayout mAmountTiL, mDescriptionTiL;
     private EditText mAmountEdT, mDescriptionEdT;
-    private MaterialSpinner mCategorySpinner, mSourceSpinner;
+    private Spinner mCategorySpinner, mSourceSpinner;
     private Button mRs50Btn, mRs200Btn, mRs500Btn, mRs2000Btn, mSaveBtn;
     private TextView mDateTv;
+    private AddIncomeFragment thisFragment;
 
     private DBHelper dbHelper;
     private HomeScreenActivity parentActivity;
-
-    String[] CATEGORYLIST = {"Please Select Category", "Shopping", "Traveling", "Food", "Bike Service", "Rent"};
-    String[] SOURCELIST = {"Please Select Source", "Cash", "Check", "PayTm Wallet", "OnlineBanking"};
-
+    CategorySourceSpinnerAdapter categoryAdapter;
+    CategorySourceSpinnerAdapter sourceAdapter;
 
     public AddIncomeFragment() {
+        thisFragment = this;
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -70,8 +72,9 @@ public class AddIncomeFragment extends Fragment implements View.OnClickListener 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        // get DbHelper instance
         dbHelper = CommonUtilities.getDBObject(getActivity());
-        parentActivity = (HomeScreenActivity)getActivity();
+        parentActivity = (HomeScreenActivity) getActivity();
         parentActivity.hideFabButton(true);
     }
 
@@ -82,8 +85,8 @@ public class AddIncomeFragment extends Fragment implements View.OnClickListener 
         mRs200Btn = (Button) view.findViewById(R.id.button_200rs);
         mRs500Btn = (Button) view.findViewById(R.id.button_500rs);
         mRs2000Btn = (Button) view.findViewById(R.id.button_2000rs);
-        mCategorySpinner = (MaterialSpinner) view.findViewById(R.id.spinner_category);
-        mSourceSpinner = (MaterialSpinner) view.findViewById(R.id.spinner_source);
+        mCategorySpinner = (Spinner) view.findViewById(R.id.spinner_category);
+        mSourceSpinner = (Spinner) view.findViewById(R.id.spinner_source);
         mDescriptionEdT = (EditText) view.findViewById(R.id.edit_text_description);
         mDescriptionTiL = (TextInputLayout) view.findViewById(R.id.text_input_layout_description);
         mDateTv = (TextView) view.findViewById(R.id.text_view_date);
@@ -94,34 +97,50 @@ public class AddIncomeFragment extends Fragment implements View.OnClickListener 
         mRs500Btn.setOnClickListener(this);
         mRs2000Btn.setOnClickListener(this);
         mSaveBtn.setOnClickListener(this);
-        mCategorySpinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener <String>() {
-
-            @Override
-            public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
-                category = item;
-            }
-        });
-
-        mSourceSpinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener <String>() {
-
-            @Override
-            public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
-                source = item;
-            }
-        });
-
         mDateTv.setOnClickListener(this);
     }
+
 
     @Override
     public void onStart() {
         super.onStart();
-        ArrayAdapter <String> categoryAdapter = new ArrayAdapter <String>(getActivity(),
-                android.R.layout.simple_dropdown_item_1line, CATEGORYLIST);
-        ArrayAdapter <String> sourceAdapter = new ArrayAdapter <String>(getActivity(),
-                android.R.layout.simple_dropdown_item_1line, SOURCELIST);
+        categoryAdapter = new CategorySourceSpinnerAdapter(getActivity(), true);
+        sourceAdapter = new CategorySourceSpinnerAdapter(getActivity(), false);
         mCategorySpinner.setAdapter(categoryAdapter);
         mSourceSpinner.setAdapter(sourceAdapter);
+        categoryAdapter.refreshIncomeUI();
+        sourceAdapter.refreshIncomeUI();
+
+
+        mCategorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView <?> parent, View view, int position, long id) {
+                Category clickedCategory = (Category) categoryAdapter.getItem(position);
+                Log.d(TAG, "onItemSelected: " + clickedCategory.getTitle());
+                category = clickedCategory.getTitle();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView <?> parent) {
+            }
+        });
+
+        mSourceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView <?> parent, View view, int position, long id) {
+                Source clickedSource = (Source) sourceAdapter.getItem(position);
+                Log.d(TAG, "onItemSelected: " + clickedSource.getTitle());
+                source = clickedSource.getTitle();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView <?> parent) {
+
+            }
+        });
+
     }
 
     @Override
@@ -165,11 +184,12 @@ public class AddIncomeFragment extends Fragment implements View.OnClickListener 
         mAmountEdT.setText("" + newAmt);
     }
 
+    // This method will validate all value and save to Db
     private void validateAndSave() {
         amountStr = mAmountEdT.getText().toString();
-        try{
+        try {
             amount = Double.parseDouble(amountStr);
-        }catch (Exception e){
+        } catch (Exception e) {
             mAmountTiL.setError("Please Enter Current Amount");
         }
         description = mDescriptionEdT.getText().toString();
@@ -180,32 +200,21 @@ public class AddIncomeFragment extends Fragment implements View.OnClickListener 
                 ", \n src = " + source;
         Log.d(TAG, "validateAndSave: " + logs);
 
-        if (validate(amountStr, mAmountTiL, "Please enter Amount"))
-            if (validate(date, mDateTv, "Please enter Date")) {
-                final ContentValues values = new ContentValues();
-                values.put(Constants.TRANSACTION_DATE, date);
-                values.put(Constants.TRANSACTION_DESCRIPTION, description);
-                values.put(Constants.TRANSACTION_CATEGORY, category);
-                values.put(Constants.TRANSACTION_SOURCE, source);
-                values.put(Constants.TRANSACTION_TYPE, Transaction.TYPE_CREDIT);
-                values.put(Constants.TRANSACTION_AMOUNT, amount);
-
-                AsyncDBTransaction asyncDBTransaction = new AsyncDBTransaction();
-                asyncDBTransaction.execute(new MyOwndata(dbHelper, values));
-    /*            new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        *//*
-                        * save records to database with new Thread
-                        * because database operation may take longer time
-                        *
-                        * *//*
-
-
-//                        dbHelper.addTransaction(values);
-                    }
-                }).start();*/
+        if (validate(amountStr, mAmountTiL, "Please enter Amount")) {
+            if (validate(category, source)) {
+                if (validate(date, mDateTv, "Please enter Date")) {
+                    final ContentValues values = new ContentValues();
+                    values.put(Constants.TRANSACTION_DATE, date);
+                    values.put(Constants.TRANSACTION_DESCRIPTION, description);
+                    values.put(Constants.TRANSACTION_CATEGORY, category);
+                    values.put(Constants.TRANSACTION_SOURCE, source);
+                    values.put(Constants.TRANSACTION_TYPE, Transaction.TYPE_CREDIT);
+                    values.put(Constants.TRANSACTION_AMOUNT, amount);
+                    AsyncDBTransaction asyncDBTransaction = new AsyncDBTransaction();
+                    asyncDBTransaction.execute(new MyOwndata(dbHelper, values));
+                }
             }
+        }
     }
 
     /*
@@ -231,6 +240,19 @@ public class AddIncomeFragment extends Fragment implements View.OnClickListener 
         }
     }
 
+    private boolean validate(String category, String source) {
+        if (category.equalsIgnoreCase("Please Select Category")) {
+            Toast.makeText(parentActivity, "Please select Category", Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (source.equalsIgnoreCase("Please Select Source")) {
+            Toast.makeText(parentActivity, "Please select Source", Toast.LENGTH_SHORT).show();
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+
     private DatePickerDialog.OnDateSetListener pickerListener = new DatePickerDialog.OnDateSetListener() {
 
         // when dialog box is closed, below method will be called.
@@ -238,12 +260,11 @@ public class AddIncomeFragment extends Fragment implements View.OnClickListener 
         public void onDateSet(DatePicker view, int selectedYear,
                               int selectedMonth, int selectedDay) {
             int year = selectedYear;
-            int month = selectedMonth;
+            int month = selectedMonth + 1;
             int day = selectedDay;
             // Show selected date
-            date = "" + new StringBuilder().append(month + 1)
-                    .append("-").append(day).append("-").append(year)
-                    .append(" ");
+            date = "" + day + "-" + month + "-" + year;
+//            date = "" + new StringBuilder().append(month + 1).append("-").append(day).append("-").append(year).append("");
             mDateTv.setText(date);
         }
     };
@@ -272,7 +293,7 @@ public class AddIncomeFragment extends Fragment implements View.OnClickListener 
             Log.d(TAG, "onPostExecute: " + s);
             Toast.makeText(getActivity(), "Record is stored", Toast.LENGTH_SHORT).show();
             clearFields();
-            ((HomeScreenActivity)getActivity()).loadHomeScreen();
+            ((HomeScreenActivity) getActivity()).loadHomeScreen();
            /* getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -280,10 +301,11 @@ public class AddIncomeFragment extends Fragment implements View.OnClickListener 
             });*/
         }
 
-        private void clearFields(){
+        // This method will clear all fields with default values
+        private void clearFields() {
             mAmountEdT.setText("");
-            mCategorySpinner.setSelectedIndex(0);
-            mSourceSpinner.setSelectedIndex(0);
+           /* mCategorySpinner.setSelectedIndex(0);
+            mSourceSpinner.setSelectedIndex(0);*/
             mDateTv.setText("");
             mDescriptionEdT.setText("");
             mSaveBtn.setEnabled(true);

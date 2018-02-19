@@ -14,7 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".FlashScreenActivity"
+            android:name=".activity.FlashScreenActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/ExpenseCalculator.FlashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,12 +24,21 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".HomeScreenActivity"
+            android:name=".activity.HomeScreenActivity"
             android:label="Expense Calculator"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.TransactionDetailsActivity"
+            android:parentActivityName=".activity.HomeScreenActivity"
+            android:screenOrientation="landscape" />
 
-        <receiver android:name=".utils.FutureTransactionReceiver" >
-        </receiver>
+        <receiver android:name=".utils.FutureTransactionReceiver" />
+
+        <activity
+            android:name=".activity.SettingsActivity"
+            android:label="Settings"
+            android:parentActivityName=".activity.HomeScreenActivity"></activity>
     </application>
 
 </manifest>

@@ -27,7 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionMenu;
-import com.pub.expensecalculator.HomeScreenActivity;
+import com.pub.expensecalculator.activity.HomeScreenActivity;
 import com.pub.expensecalculator.R;
 import com.pub.expensecalculator.adapter.FutureTransactionViewAdapter;
 import com.pub.expensecalculator.database.DBHelper;
@@ -74,6 +74,7 @@ public class FutureTransactionFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_future_transaction, container, false);
         mFabTransactionMenu = (FloatingActionMenu) view.findViewById(R.id.fabmenu_future_transaction);
+        // init recycler view and statusTextView
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_View_future_transaction);
         mStatusTv = (TextView) view.findViewById(R.id.textview_no_result);
 
@@ -235,9 +236,8 @@ public class FutureTransactionFragment extends Fragment {
         mAmountEdt.setText("" + newAmt);
     }
 
-
+    // This method will validate all value and save to Db
     private boolean validateAndSave() {
-
         String logs = " Amount = " + amount;
         Log.d(TAG, "validateAndSave: " + logs);
 
@@ -270,6 +270,12 @@ public class FutureTransactionFragment extends Fragment {
         }
     }
 
+    /*
+    *
+    * This method will check whether the fields are having values or not,
+    * if not --> set error on respective view and return false
+    *
+    * */
     private boolean validate(String value, TextInputLayout view, String error) {
         Log.d(TAG, "Validate: Error " + error + " Value = " + value);
 

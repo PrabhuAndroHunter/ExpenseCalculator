@@ -39,6 +39,8 @@ public class TablesClass extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(Constants.TABLE1);
         db.execSQL(Constants.TABLE2);
+        db.execSQL(Constants.TABLE3);
+        db.execSQL(Constants.TABLE4);
     }
 
     @Override

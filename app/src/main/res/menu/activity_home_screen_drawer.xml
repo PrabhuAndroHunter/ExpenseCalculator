@@ -3,20 +3,69 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single"
-        android:id="@+id/g1">
+    <group
+        android:id="@+id/g1"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_Home"
             android:icon="@drawable/ic_menu_home"
             android:title="Home" />
     </group>
 
-    <group android:checkableBehavior="single"
-        android:id="@+id/g2">
+    <group
+        android:id="@+id/g2"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_future_Transaction"
             android:icon="@drawable/ic_future"
             android:title="Future Transaction" />
     </group>
+
+    <group
+        android:id="@+id/g3"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_account_statment"
+            android:icon="@drawable/ic_passbook"
+            android:title="Account Statment" />
+    </group>
+
+    <group
+        android:id="@+id/g4"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_manage_category"
+            android:icon="@drawable/ic_category"
+            android:title="Manage Category" />
+    </group>
+
+    <group
+        android:id="@+id/g5"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_manage_source"
+            android:icon="@drawable/ic_source"
+            android:title="Manage Source" />
+    </group>
+
+
+    <group
+        android:id="@+id/g6"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_menu_settings"
+            android:icon="@drawable/ic_settings"
+            android:title="Settings" />
+    </group>
+
+    <group
+        android:id="@+id/g7"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_menu_share"
+            android:icon="@drawable/ic_menu_share"
+            android:title="Tell a Friend" />
+    </group>
+
 
 </menu>

@@ -2,9 +2,11 @@
 <resources>
     <color name="colorPrimary">#009688</color>
     <color name="colorPrimaryDark">#00695C</color>
-    <color name="colorAccent">#f4b5ca</color>
+    <color name="colorAccent">#d27b98</color>
     <color name="colorBlack">#000000</color>
+    <color name="colorLightBlack">#9c9c90</color>
     <color name="colorWhite">#FFFFFF</color>
+    <color name="colorLightWhite">#dcd7d7</color>
     <color name="colorLightPink">#f4b5ca</color>
     <color name="colorLightGreen">#7a8483</color>
     <color name="colorSpinner">#e9dddd</color>
@@ -15,5 +17,13 @@
 
     <color name="thumb_inactive">#A5A5A5</color>
     <color name="track_inactive">#66A5A5A5</color>
+
+    <color name="bg_row_background">#fa315b</color>
+    <color name="item_name">#535353</color>
+    <color name="description">#a9a9a9</color>
+
+    <color name="colorFabButtonNormal">#56d2c7</color>
+    <color name="ColorLine">#000000</color>
+
 
 </resources>

@@ -1,0 +1,85 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.pub.expensecalculator.fragment.AccountStatmentFragment">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/button_border_with_corner"
+        android:elevation="8sp"
+        android:orientation="vertical"
+        android:paddingBottom="30dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="50dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textSize="18sp"
+            android:textColor="@color/colorAccent"
+            android:fontFamily="serif"
+            android:text="Please Select Transaction Period"/>
+
+        <RadioGroup
+            android:id="@+id/radio_statment_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/radioButton_all"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:checked="true"
+                android:text="All Transactions"
+                android:textSize="18sp" />
+
+            <RadioButton
+                android:id="@+id/radioButton_last_month"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:checked="false"
+                android:layout_marginTop="10dp"
+                android:text="Last one Month"
+                android:textSize="18sp" />
+
+            <RadioButton
+                android:id="@+id/radioButton_last_three_month"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:text="Last 3 month"
+                android:textSize="18sp" />
+
+            <RadioButton
+                android:id="@+id/radioButton_last_six_month"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:text="Last 6 month"
+                android:textSize="18sp" />
+        </RadioGroup>
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/button_proceed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:text="Proceed"
+            android:textColor="@color/colorWhite"
+            android:textSize="18sp" />
+
+
+    </LinearLayout>
+
+</RelativeLayout>

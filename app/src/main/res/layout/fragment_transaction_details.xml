@@ -1,0 +1,53 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.pub.expensecalculator.fragment.TransactionDetailsFragment">
+
+    <LinearLayout
+        android:id="@+id/account_details_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="6">
+
+        <TextView
+            style="@style/account_details_header"
+            android:layout_weight="1"
+            android:text="Date" />
+
+        <TextView
+            style="@style/account_details_header"
+            android:layout_weight="1"
+            android:text="Description" />
+
+        <TextView
+            style="@style/account_details_header"
+            android:layout_weight="1"
+            android:text="Category" />
+
+        <TextView
+            style="@style/account_details_header"
+            android:layout_weight="1"
+            android:text="Debit" />
+
+        <TextView
+            style="@style/account_details_header"
+            android:layout_weight="1"
+            android:text="Credit" />
+
+        <TextView
+            style="@style/account_details_header"
+            android:layout_weight="1"
+            android:text="Balance" />
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_View_transaction_details"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/account_details_header"
+        android:clipToPadding="false"
+        android:elevation="2dp"
+        tools:listitem="@layout/item_account_details" />
+
+</RelativeLayout>

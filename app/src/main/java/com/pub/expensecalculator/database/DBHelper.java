@@ -9,7 +9,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
+import com.pub.expensecalculator.model.Category;
 import com.pub.expensecalculator.model.FutureTransation;
+import com.pub.expensecalculator.model.Source;
 import com.pub.expensecalculator.model.Transaction;
 import com.pub.expensecalculator.utils.Constants;
 import com.pub.expensecalculator.utils.SharedPrefManager;
@@ -120,6 +122,8 @@ public class DBHelper {
         values.put(Constants.BALANCE, total_amount);
         return insertContentVals(Constants.TRANSACTION_TABLE, values);
     }
+
+
 
     /*
     *
@@ -351,5 +355,128 @@ public class DBHelper {
         }
         cursor.close();
         return dates;
+    }
+
+    // manage category
+
+    public List <Category> getAllCategory() {
+        List <Category> categoryList = new ArrayList <Category>();
+        //Cursor exposes results from a query on a SQLiteDatabase.
+        Cursor cursor = db.query(false, Constants.TRANSACTION_CATEGORY_TABLE,
+                new String[]{Constants.ID,
+                        Constants.CATEGORY_TITLE,
+                        Constants.CATEGORY_LOGO}, null, null, null, null, null, null);
+        if (cursor.moveToFirst()) {
+            do {
+                int tId = cursor.getInt(cursor.getColumnIndex(Constants.ID));
+                String cTitle = cursor.getString(cursor.getColumnIndex(Constants.CATEGORY_TITLE));
+                byte[] cLogo = cursor.getBlob(cursor.getColumnIndex(Constants.CATEGORY_LOGO));
+                categoryList.add(new Category(tId, cTitle, cLogo));
+            } while (cursor.moveToNext());
+            cursor.close();
+            return categoryList;
+        }
+        cursor.close();
+        return categoryList; // Return statement
+    }
+
+    public List <Category> getCreditCategory() {
+        List <Category> categoryList = new ArrayList <Category>();
+        //Cursor exposes results from a query on a SQLiteDatabase.
+        Cursor cursor = db.query(false, Constants.TRANSACTION_CATEGORY_TABLE,
+                new String[]{Constants.ID,
+                        Constants.CATEGORY_TITLE,
+                        Constants.CATEGORY_LOGO}, Constants.TRANSACTION_TYPE_CREDIT + " = 1", null, Constants.CATEGORY_TITLE, null, Constants.CATEGORY_TITLE + " ASC", null);
+        if (cursor.moveToFirst()) {
+            do {
+                int tId = cursor.getInt(cursor.getColumnIndex(Constants.ID));
+                String cTitle = cursor.getString(cursor.getColumnIndex(Constants.CATEGORY_TITLE));
+                byte[] cLogo = cursor.getBlob(cursor.getColumnIndex(Constants.CATEGORY_LOGO));
+                categoryList.add(new Category(tId, cTitle, cLogo));
+            } while (cursor.moveToNext());
+            cursor.close();
+            return categoryList;
+        }
+        cursor.close();
+        return categoryList; // Return statement
+    }
+
+    public List <Category> getDebitCategory() {
+        List <Category> categoryList = new ArrayList <Category>();
+        //Cursor exposes results from a query on a SQLiteDatabase.
+        Cursor cursor = db.query(false, Constants.TRANSACTION_CATEGORY_TABLE,
+                new String[]{Constants.ID,
+                        Constants.CATEGORY_TITLE,
+                        Constants.CATEGORY_LOGO}, Constants.TRANSACTION_TYPE_DEBIT + " = 1", null, Constants.CATEGORY_TITLE, null, Constants.CATEGORY_TITLE + " ASC", null);
+        if (cursor.moveToFirst()) {
+            do {
+                int tId = cursor.getInt(cursor.getColumnIndex(Constants.ID));
+                String cTitle = cursor.getString(cursor.getColumnIndex(Constants.CATEGORY_TITLE));
+                byte[] cLogo = cursor.getBlob(cursor.getColumnIndex(Constants.CATEGORY_LOGO));
+                categoryList.add(new Category(tId, cTitle, cLogo));
+            } while (cursor.moveToNext());
+            cursor.close();
+            return categoryList;
+        }
+        cursor.close();
+        return categoryList; // Return statement
+    }
+
+    public boolean deleteTransactionCategory(int id) {
+        return db.delete(Constants.TRANSACTION_CATEGORY_TABLE, Constants.ID + "=" + id, null) > 0;
+    }
+
+    public List <Source> getCreditSource() {
+        List <Source> sourceList = new ArrayList <Source>();
+        //Cursor exposes results from a query on a SQLiteDatabase.
+        Cursor cursor = db.query(false, Constants.TRANSACTION_SOURCE_TABLE,
+                new String[]{Constants.ID,
+                        Constants.SOURCE_TITLE,
+                        Constants.SOURCE_LOGO}, Constants.TRANSACTION_TYPE_CREDIT + " = 1", null, Constants.SOURCE_TITLE, null, Constants.SOURCE_TITLE + " ASC", null);
+        if (cursor.moveToFirst()) {
+            do {
+                int tId = cursor.getInt(cursor.getColumnIndex(Constants.ID));
+                String cTitle = cursor.getString(cursor.getColumnIndex(Constants.SOURCE_TITLE));
+                byte[] cLogo = cursor.getBlob(cursor.getColumnIndex(Constants.SOURCE_LOGO));
+                sourceList.add(new Source(tId, cTitle, cLogo));
+            } while (cursor.moveToNext());
+            cursor.close();
+            return sourceList;
+        }
+        cursor.close();
+        return sourceList; // Return statement
+    }
+
+    public List <Source> getDebitSource() {
+        List <Source> sourceList = new ArrayList <Source>();
+        //Cursor exposes results from a query on a SQLiteDatabase.
+        Cursor cursor = db.query(false, Constants.TRANSACTION_SOURCE_TABLE,
+                new String[]{Constants.ID,
+                        Constants.SOURCE_TITLE,
+                        Constants.SOURCE_LOGO}, Constants.TRANSACTION_TYPE_DEBIT + " = 1", null, Constants.SOURCE_TITLE, null, Constants.SOURCE_TITLE + " ASC", null);
+        if (cursor.moveToFirst()) {
+            do {
+                int tId = cursor.getInt(cursor.getColumnIndex(Constants.ID));
+                String cTitle = cursor.getString(cursor.getColumnIndex(Constants.SOURCE_TITLE));
+                byte[] cLogo = cursor.getBlob(cursor.getColumnIndex(Constants.SOURCE_LOGO));
+                sourceList.add(new Source(tId, cTitle, cLogo));
+            } while (cursor.moveToNext());
+            cursor.close();
+            return sourceList;
+        }
+        cursor.close();
+        return sourceList; // Return statement
+    }
+
+    public boolean deleteTransactionSource(int id) {
+        return db.delete(Constants.TRANSACTION_SOURCE_TABLE, Constants.ID + "=" + id, null) > 0;
+    }
+
+    public void deleteAllCategory() {
+        db.delete(Constants.TRANSACTION_CATEGORY_TABLE, null, null);
+    }
+
+    public void deleteAllSource() {
+        db.delete(Constants.TRANSACTION_SOURCE_TABLE, null, null);
     }
 }

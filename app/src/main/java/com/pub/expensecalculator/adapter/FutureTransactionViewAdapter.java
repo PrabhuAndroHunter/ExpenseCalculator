@@ -16,14 +16,12 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.pub.expensecalculator.HomeScreenActivity;
+import com.pub.expensecalculator.activity.HomeScreenActivity;
 import com.pub.expensecalculator.R;
 import com.pub.expensecalculator.database.DBHelper;
 import com.pub.expensecalculator.fragment.FutureTransactionFragment;
 import com.pub.expensecalculator.model.FutureTransation;
-import com.pub.expensecalculator.model.Transaction;
 import com.pub.expensecalculator.utils.CommonUtilities;
 import com.pub.expensecalculator.utils.Constants;
 
@@ -353,7 +351,4 @@ public class FutureTransactionViewAdapter extends RecyclerView.Adapter <FutureTr
         double newAmt = currentAmt + amount;
         mAmountEdt.setText("" + newAmt);
     }
-
-
-
 }
